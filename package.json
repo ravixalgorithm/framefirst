@@ -1,0 +1,31 @@
+{
+  "name": "framefirst",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.8.1",
+  "scripts": {
+    "dev": "pnpm --filter @framefirst/web dev",
+    "dev:full": "concurrently -k -n api,worker,web -c cyan,magenta,green \"pnpm --filter @framefirst/api dev\" \"pnpm --filter @framefirst/api worker\" \"pnpm --filter @framefirst/web dev\"",
+    "tunnel:web": "ngrok http 3000",
+    "tunnel:api": "ngrok http 3001",
+    "tunnel:cloudflare": "cloudflared tunnel --url http://localhost:3000",
+    "dev:backend": "concurrently -k -n api,worker -c cyan,magenta \"pnpm --filter @framefirst/api dev\" \"pnpm --filter @framefirst/api worker\"",
+    "dev:infra": "docker compose up -d",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "db:generate": "pnpm --filter @framefirst/db generate",
+    "db:migrate": "pnpm --filter @framefirst/db migrate",
+    "db:seed:dev": "pnpm --filter @framefirst/db seed:dev",
+    "api:worker": "pnpm --filter @framefirst/api worker"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.3"
+  }
+}

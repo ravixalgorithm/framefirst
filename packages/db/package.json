@@ -1,0 +1,32 @@
+{
+  "name": "@framefirst/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts",
+    "./clickhouse": "./src/clickhouse.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint src drizzle.config.ts",
+    "generate": "drizzle-kit generate",
+    "migrate": "tsx src/migrate.ts",
+    "seed:dev": "tsx src/seed-dev.ts",
+    "test:clickhouse": "tsx src/test-insert.ts"
+  },
+  "dependencies": {
+    "@clickhouse/client": "^1.12.1",
+    "@framefirst/types": "workspace:*",
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.7",
+    "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.7",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}

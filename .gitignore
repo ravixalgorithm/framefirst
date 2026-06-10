@@ -1,0 +1,16 @@
+node_modules
+dist
+.turbo
+.next
+.expo
+coverage
+.env
+.env.local
+.env.*.local
+pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+docker-data
+apps/api/public/track.js
+.codex-screenshots/
