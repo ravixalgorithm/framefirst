@@ -1,6 +1,10 @@
 const ONESIGNAL_APP_ID = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID ?? "";
 
 export function OneSignalHead() {
+  if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") {
+    return null;
+  }
+
   if (!ONESIGNAL_APP_ID || ONESIGNAL_APP_ID === "YOUR_ONESIGNAL_APP_ID") {
     return null;
   }

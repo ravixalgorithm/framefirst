@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import {
   ArrowUpRight,
   BarChart3,
@@ -28,6 +29,11 @@ export default async function DashboardPage({ params }: PageProps) {
     getAnalytics(params.siteId),
     getProject(params.siteId)
   ]);
+
+  if (!project) {
+    notFound();
+  }
+
   const totalUtmVisitors = analytics.utmSources.reduce(
     (total, source) => total + source.visitors,
     0

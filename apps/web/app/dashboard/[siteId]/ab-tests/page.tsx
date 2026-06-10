@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 import { AbTestsWorkbench } from "../../../../components/ab-tests-workbench";
 import { getAbTests, getProject } from "../../../../lib/api";
 
@@ -12,6 +14,10 @@ export default async function AbTestsPage({ params }: PageProps) {
     getAbTests(params.siteId),
     getProject(params.siteId)
   ]);
+
+  if (!project) {
+    notFound();
+  }
 
   return (
     <>

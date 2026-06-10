@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 import { SettingsPanel } from "../../../../components/settings-panel";
 import { TestNotificationPanel } from "../../../../components/test-notification-panel";
 import { getProject, getProjectSettings } from "../../../../lib/api";
@@ -14,6 +16,10 @@ export default async function SettingsPage({ params }: PageProps) {
     getProject(params.siteId),
     getProjectSettings(params.siteId)
   ]);
+
+  if (!project) {
+    notFound();
+  }
 
   return (
     <>

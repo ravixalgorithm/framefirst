@@ -2,9 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Sora, Quicksand } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { DemoBanner } from "@/components/demo-banner";
 import { OneSignalProvider } from "@/components/onesignal-provider";
 import { OneSignalHead } from "@/components/onesignal-head";
 import { NotificationPrompt } from "@/components/notification-prompt";
+import { isDemoMode } from "@/lib/demo-mode";
 
 const fontHeading = Sora({ subsets: ['latin'], variable: '--font-heading' });
 const fontSans = Quicksand({ subsets: ['latin'], variable: '--font-sans' });
@@ -36,9 +38,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <OneSignalHead />
       </head>
       <body className={fontSans.variable}>
+        {isDemoMode() ? <DemoBanner /> : null}
         <OneSignalProvider>
           {children}
-          <NotificationPrompt />
+          {!isDemoMode() ? <NotificationPrompt /> : null}
         </OneSignalProvider>
       </body>
     </html>

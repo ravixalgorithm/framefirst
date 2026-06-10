@@ -168,7 +168,11 @@ export function OneSignalProvider({ children }: { children: React.ReactNode }) {
       }
       setIsReady(true);
       const state = applySubscription(result.state);
-      return { ...state, error: result.error, diagnostics: result.diagnostics };
+      return {
+        ...state,
+        ...(result.error ? { error: result.error } : {}),
+        ...(result.diagnostics ? { diagnostics: result.diagnostics } : {}),
+      };
     } catch (error) {
       const message = error instanceof Error ? error.message : "Failed to enable notifications";
       setInitError(message);

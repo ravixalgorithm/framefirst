@@ -47,12 +47,14 @@ export function TrafficBars({ points }: { points: TrafficPoint[] }) {
   const paddedPoints = React.useMemo(() => {
     const today = new Date();
     const days = [];
-    const pointsByDate = new Map(points.map(p => [p.date.split('T')[0], p]));
+    const pointsByDate = new Map(
+      points.map((point) => [point.date.slice(0, 10), point] as const)
+    );
 
     for (let i = 6; i >= 0; i--) {
       const d = new Date(today);
       d.setDate(d.getDate() - i);
-      const dateString = d.toISOString().split('T')[0];
+      const dateString = d.toISOString().slice(0, 10);
       const existing = pointsByDate.get(dateString);
       
       days.push({
@@ -230,7 +232,7 @@ export function TrafficBars({ points }: { points: TrafficPoint[] }) {
           </span>
         ))}
         {/* Invisible spacer to give the container height */}
-        <span className="opacity-0">{formatShortDate(paddedPoints[0]?.date)}</span>
+        <span className="opacity-0">{formatShortDate(paddedPoints[0]?.date ?? "")}</span>
       </div>
     </div>
   );
@@ -250,77 +252,6 @@ function straightPath(points: ChartCoordinate[]): string {
   }
 
   return path;
-}
-
-function areaPath(points: ChartCoordinate[], innerHeight: number, chartPadding: any): string {
-  if (points.length === 0) return "";
-  const line = straightPath(points);
-  const bottomY = chartPadding.top + innerHeight;
-  const first = points[0];
-  const last = points[points.length - 1];
-  return `${line} L ${last.x} ${bottomY} L ${first.x} ${bottomY} Z`;
-}
-
-function coordinatesFor(points: TrafficPoint[], metric: TrafficMetric, max: number): ChartCoordinate[] {
-  const innerHeight = plotHeight();
-  const step = xStep(points.length);
-
-  return points.map((point, index) => {
-    const value = point[metric];
-
-    return {
-      date: point.date,
-      value,
-      x: chartPadding.left + step * index,
-      y: yFor(value, max, innerHeight)
-    };
-  });
-}
-
-function yTicks(max: number) {
-  return [1, 0.75, 0.5, 0.25, 0].map((ratio) => {
-    const value = Math.round(max * ratio);
-
-    return {
-      ratio,
-      value,
-      y: yFor(value, max, plotHeight())
-    };
-  });
-}
-
-function yFor(value: number, max: number, innerHeight: number): number {
-  return chartPadding.top + (1 - value / max) * innerHeight;
-}
-
-function xStep(pointCount: number): number {
-  const innerWidth = chartWidth - chartPadding.left - chartPadding.right;
-
-  return pointCount > 1 ? innerWidth / (pointCount - 1) : innerWidth;
-}
-
-function smoothPath(points: ChartCoordinate[]): string {
-  const [first, ...rest] = points;
-
-  if (!first) {
-    return "";
-  }
-
-  let previous = first;
-  let path = `M ${first.x} ${first.y}`;
-
-  for (const point of rest) {
-    const controlX = previous.x + (point.x - previous.x) / 2;
-
-    path += ` C ${controlX} ${previous.y}, ${controlX} ${point.y}, ${point.x} ${point.y}`;
-    previous = point;
-  }
-
-  return path;
-}
-
-function plotHeight(): number {
-  return chartHeight - chartPadding.top - chartPadding.bottom;
 }
 
 function clamp(value: number, min: number, max: number): number {

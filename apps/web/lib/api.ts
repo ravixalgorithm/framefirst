@@ -3,7 +3,6 @@ import type {
   CreateProjectRequest,
   CreateProjectResponse,
   ListProjectsResponse,
-  HeatmapReport,
   UtmLink,
   AbTest,
   AbTestVariant,
@@ -13,9 +12,20 @@ import type {
 } from "@framefirst/types/api";
 
 export type { UtmLink, AbTest, AbTestVariant, ProjectSettings, NotificationRule, Project };
+export type { HeatmapReport } from "./demo-data";
 
 import { cookies } from "next/headers";
 
+import {
+  demoAbTests,
+  demoAnalytics,
+  demoHeatmap,
+  demoLinks,
+  demoProjects,
+  demoProjectForSite,
+  demoSettings,
+} from "./demo-data";
+import { isDemoMode } from "./demo-mode";
 import { internalApiUrl } from "./config";
 
 export const devAuthHeaders = {
@@ -33,6 +43,10 @@ function getAuthHeaders() {
 }
 
 export async function getAnalytics(siteId: string): Promise<AnalyticsResponse> {
+  if (isDemoMode()) {
+    return demoAnalytics;
+  }
+
   const response = await fetch(`${internalApiUrl}/analytics/${siteId}`, {
     cache: "no-store",
     headers: getAuthHeaders(),
@@ -46,6 +60,10 @@ export async function getAnalytics(siteId: string): Promise<AnalyticsResponse> {
 }
 
 export async function getProjects(): Promise<ListProjectsResponse> {
+  if (isDemoMode()) {
+    return demoProjects;
+  }
+
   const response = await fetch(`${internalApiUrl}/projects`, {
     cache: "no-store",
     headers: getAuthHeaders(),
@@ -61,6 +79,14 @@ export async function getProjects(): Promise<ListProjectsResponse> {
 export async function createProject(
   input: CreateProjectRequest
 ): Promise<CreateProjectResponse> {
+  if (isDemoMode()) {
+    const project = demoProjectForSite("ff_demo_new");
+    return {
+      project: { ...project, name: input.name, siteUrl: input.siteUrl ?? project.siteUrl },
+      scriptTag: `<script async src="https://cdn.framefirst.app/ff.js" data-site-id="ff_demo_new"></script>`,
+    };
+  }
+
   const response = await fetch(`${internalApiUrl}/projects`, {
     method: "POST",
     headers: {
@@ -79,6 +105,10 @@ export async function createProject(
 }
 
 export async function getProject(siteId: string): Promise<Project | null> {
+  if (isDemoMode()) {
+    return demoProjectForSite(siteId);
+  }
+
   const response = await fetch(`${internalApiUrl}/projects/snippet/${encodeURIComponent(siteId)}`, {
     cache: "no-store",
     headers: getAuthHeaders(),
@@ -97,6 +127,10 @@ export async function getProject(siteId: string): Promise<Project | null> {
 }
 
 export async function getLinks(siteId: string) {
+  if (isDemoMode()) {
+    return demoLinks;
+  }
+
   const response = await fetch(`${internalApiUrl}/links?project_id=${siteId}`, {
     cache: "no-store",
     headers: getAuthHeaders(),
@@ -109,6 +143,10 @@ export async function getLinks(siteId: string) {
 }
 
 export async function getAbTests(siteId: string) {
+  if (isDemoMode()) {
+    return demoAbTests;
+  }
+
   const response = await fetch(`${internalApiUrl}/ab-tests?project_id=${siteId}`, {
     cache: "no-store",
     headers: getAuthHeaders(),
@@ -121,6 +159,10 @@ export async function getAbTests(siteId: string) {
 }
 
 export async function getProjectSettings(siteId: string) {
+  if (isDemoMode()) {
+    return demoSettings;
+  }
+
   const response = await fetch(`${internalApiUrl}/settings/${siteId}`, {
     cache: "no-store",
     headers: getAuthHeaders(),
@@ -132,7 +174,28 @@ export async function getProjectSettings(siteId: string) {
   return response.json();
 }
 
+export async function getHeatmap(siteId: string) {
+  if (isDemoMode()) {
+    return demoHeatmap;
+  }
+
+  const response = await fetch(`${internalApiUrl}/heatmaps/${siteId}`, {
+    cache: "no-store",
+    headers: getAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Heatmap request failed with ${response.status}`);
+  }
+
+  return response.json();
+}
+
 export async function updateProjectSettings(siteId: string, input: any) {
+  if (isDemoMode()) {
+    return { ok: true, ...demoSettings, ...input };
+  }
+
   const response = await fetch(`${internalApiUrl}/settings/${siteId}`, {
     method: "POST",
     headers: {
@@ -150,6 +213,10 @@ export async function updateProjectSettings(siteId: string, input: any) {
 }
 
 export async function createLink(input: any) {
+  if (isDemoMode()) {
+    return { ok: true, id: "demo-link" };
+  }
+
   const response = await fetch(`${internalApiUrl}/links`, {
     method: "POST",
     headers: {
@@ -168,6 +235,10 @@ export async function createLink(input: any) {
 }
 
 export async function deleteLink(id: string) {
+  if (isDemoMode()) {
+    return { ok: true };
+  }
+
   const response = await fetch(`${internalApiUrl}/links/${id}`, {
     method: "DELETE",
     headers: getAuthHeaders(),
@@ -181,6 +252,10 @@ export async function deleteLink(id: string) {
 }
 
 export async function deleteProject(id: string) {
+  if (isDemoMode()) {
+    return { ok: true };
+  }
+
   const response = await fetch(`${internalApiUrl}/projects/${id}`, {
     method: "DELETE",
     headers: getAuthHeaders(),

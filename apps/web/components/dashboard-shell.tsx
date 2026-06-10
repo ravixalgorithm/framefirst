@@ -64,6 +64,14 @@ const navItems: NavItem[] = [
   }
 ];
 
+type DashboardShellProps = {
+  siteId: string;
+  project: Project;
+  projects: Project[];
+  userEmail?: string;
+  children: React.ReactNode;
+};
+
 export function DashboardShell({
   siteId,
   project,
@@ -71,6 +79,7 @@ export function DashboardShell({
   userEmail,
   children
 }: DashboardShellProps) {
+  const displayEmail = userEmail ?? "designer@preview.local";
   const pathname = usePathname();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -243,10 +252,10 @@ export function DashboardShell({
         <div className="px-4 py-4 flex flex-col gap-1 mt-auto">
           <div className={`group/navitem dock-wrapper flex items-center gap-3 px-3 py-2 mb-1 transition-all ${isSidebarCollapsed ? '-ml-[7px]' : ''}`}>
             <div className="h-8 w-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold flex-shrink-0 dock-icon">
-              {userEmail.slice(0, 1).toUpperCase()}
+              {displayEmail.slice(0, 1).toUpperCase()}
             </div>
             <div className={`flex flex-col text-sm min-w-0 transition-opacity duration-200 ${isSidebarCollapsed ? 'opacity-0' : 'opacity-100'}`}>
-              <span className="font-semibold truncate text-foreground">{userEmail}</span>
+              <span className="font-semibold truncate text-foreground">{displayEmail}</span>
               <span className="text-xs text-muted-foreground truncate">{project.name}</span>
             </div>
           </div>

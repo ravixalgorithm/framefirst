@@ -1,0 +1,7 @@
+{
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "cd ../.. && pnpm --filter @framefirst/web build",
+  "env": {
+    "NEXT_PUBLIC_DEMO_MODE": "true"
+  }
+}

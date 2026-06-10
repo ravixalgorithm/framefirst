@@ -1,4 +1,5 @@
 import { Flame, MousePointerClick, SlidersHorizontal } from "lucide-react";
+import { notFound } from "next/navigation";
 
 import { HeatmapExplorer } from "../../../../components/heatmap-explorer";
 import { MetricCard } from "../../../../components/metric-card";
@@ -15,6 +16,11 @@ export default async function HeatmapsPage({ params }: PageProps) {
     getHeatmap(params.siteId),
     getProject(params.siteId)
   ]);
+
+  if (!project) {
+    notFound();
+  }
+
   const analytics = await getAnalytics(params.siteId);
 
   return (

@@ -1,3 +1,5 @@
+import { notFound } from "next/navigation";
+
 import { UtmBuilder } from "../../../../components/utm-builder";
 import { getLinks, getProject } from "../../../../lib/api";
 
@@ -15,6 +17,10 @@ export default async function UtmPage({ params }: PageProps) {
     getLinks(params.siteId),
     getProject(params.siteId)
   ]);
+
+  if (!project) {
+    notFound();
+  }
 
   return (
     <>

@@ -7,6 +7,11 @@ export function LiveVisitors({ siteId }: { siteId: string }) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") {
+      setCount(24);
+      return;
+    }
+
     const eventSource = new EventSource(`/api/live/${siteId}`);
 
     eventSource.onmessage = (event) => {
